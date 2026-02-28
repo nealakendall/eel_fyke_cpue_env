@@ -9,7 +9,7 @@ library(lubridate)  #install.packages("lubridate") #if needed
 library(dplyr)
 library(tidyr)
 
-setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance")
+setwd("C:\\....")
 rm(list=ls())
 
 ##------------
