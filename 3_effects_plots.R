@@ -18,7 +18,7 @@ library(MASS) ## for random multivariate normal simulation
 library(forcats)
 library(ggh4x)
 
-setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance\\Eel model_std_cloundslightinteract")
+setwd("C:\\...")
 
 today <- format(Sys.time(), "_%d_%m_%Y")
 
