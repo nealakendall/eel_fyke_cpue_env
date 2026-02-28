@@ -3,7 +3,6 @@
 ## NK: Feb 27, 2026, updated from CM
 ##--------------------------------
 
-########  this file contains:
 ###### year as smooth, no environmental covariates included (_1)--NOT CURRENTLY USED in plots
 
 ###### environmental covariates included, not conditioned on temperature (temp is considered a catchability, not density variable) #######
