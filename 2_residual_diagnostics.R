@@ -12,6 +12,8 @@ library(tidyr)
 
 ################ DHARMA PLOTS HERE   ##################################################################
 
+setwd("C:\\...")
+
 ## set the basis functions for GAMs
 bs_year <- "cr"
 bs_other <- "tp"
@@ -238,7 +240,7 @@ image_write(combined, "DHARMa_all_lakes_weight.png")
 
 ######## other residual plots here ##############################################################################
 
-setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance")
+setwd("C:\\...")
 
 load("count_fits.RData")
 load("all_lcdat.RData")
