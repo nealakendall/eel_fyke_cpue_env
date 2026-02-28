@@ -14,7 +14,7 @@
 library(mgcv)
 library(ggplot2); theme_set(theme_bw())
 
-setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance\\Eel model_std_cloundslightinteract")
+setwd("C:\\...")
 
 load("all_lcdat.RData")
 
