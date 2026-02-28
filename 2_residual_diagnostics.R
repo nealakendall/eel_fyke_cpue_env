@@ -3,8 +3,240 @@
 ## NK: Feb 27, 2026, updated from CM
 ##-----------------------------
 
+library(DHARMa)
+library(magick)
 library(mgcv)
-library(DHARMa) 
+library(ggplot2); theme_set(theme_bw())
+library(dplyr)
+library(tidyr)
+
+################ DHARMA PLOTS HERE   ##################################################################
+
+## set the basis functions for GAMs
+bs_year <- "cr"
+bs_other <- "tp"
+
+lakes <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
+
+#count
+models  <- list()
+dharma  <- list()
+
+for (lake in lakes) {
+  print(lake)
+  ## remove October sampling, which was out of the sampling season 
+  sub_dat <- subset(countenvdat, Lake == lake & Month != "Oct" & !is.na(count))
+  sub_dat <- droplevels(sub_dat)
+  ## sum to zero contrasts - doesn't matter currently
+  contrasts(sub_dat$fSite) <- contr.sum
+  if(lake == "Feeagh"){
+    form <- as.formula(count ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re") +
+                         s(trap_depth, m = 2, bs = bs_other) +
+                         s(trap_gradient, m = 2, bs = bs_other) +
+                         s(trap_number, by = survey, m = 2, bs = bs_other) +
+                         s(fchain, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard +
+                         offset(log(Effort)))
+  }
+  if(lake == "BOH"){
+    form <- as.formula(count ~ 
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, k = 5, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re", k= 3) +
+                         s(trap_depth, m = 2, bs = bs_other) +
+                         s(trap_gradient, k = 5, m = 2, bs = bs_other) +
+                         s(trap_number, m = 2, bs = bs_other) +
+                         s(fchain, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard +
+                         offset(log(Effort)))
+  }
+  if(lake %in% c("Furnace", "Bunaveela")){
+    form <- as.formula(count ~ 
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, k = 5, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re", k= 3) +
+                         s(trap_depth, k= 5, m = 2, bs = bs_other) +
+                         s(trap_gradient, k= 5, m = 2, bs = bs_other) +
+                         s(trap_number, k= 5, m = 2, bs = bs_other) +
+                         s(fchain, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard +
+                         offset(log(Effort)))
+  }
+  
+  f0 <- gam(form,
+            select = TRUE,
+            method = "REML",
+            family = nb(),
+            data = sub_dat)
+  
+  models[[lake]] <- f0
+  dharma[[lake]] <- simulateResiduals(f0, n = 1000)
+}
+
+res <- simulateResiduals(
+  fittedModel = f0,
+  n = 1000   # increase if you want more precision
+)
+
+plot(dharma[["BOH"]])
+plot(dharma[["Furnace"]])
+plot(dharma[["Feeagh"]])
+plot(dharma[["Bunaveela"]])
+
+for (lake in lakes) {
+  png(filename = paste0("DHARMa_", lake, ".png"),
+    width = 8, height = 5, units = "in", res = 300)
+  
+  plot(dharma[[lake]], main = "")   # no per-panel titles
+  
+  mtext(
+    paste(lake),
+    outer = TRUE,
+    cex = 1.2,
+    line = -1
+  )
+  dev.off()
+}
+
+imgs <- image_read(paste0("DHARMa_", lakes, ".png"))
+row1 <- image_append(imgs[1:2], stack = FALSE)
+row2 <- image_append(imgs[3:4], stack = FALSE)
+combined <- image_append(c(row1, row2), stack = TRUE)
+image_write(combined, "DHARMa_all_lakes_count.png")
+
+
+
+
+
+#weight
+models  <- list()
+dharma  <- list()
+
+for (lake in lakes) {
+  print(lake)
+  sub_dat <- subset(weightenvdat, Lake == lake & !is.na(wt))
+  sub_dat <- droplevels(sub_dat)
+  ## sum to zero contrasts - doesn't matter currently
+  contrasts(sub_dat$fSite) <- contr.sum
+  if(lake %in% c("BOH", "Bunaveela")){
+    form <- as.formula(wt ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard + 
+                         offset(log(Effort)))
+  }
+  if(lake == "Furnace"){
+    form <- as.formula(wt ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other, k = 5) +
+                         s(fSite, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard + 
+                         offset(log(Effort)))
+  }
+  if(lake == "Feeagh"){
+    form <- as.formula(wt ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard + 
+                         offset(log(Effort)))
+  }
+  ##
+  f0 <- gam(form,
+            select = TRUE,
+            ##method = "ML",
+            family = tw(),
+            data = sub_dat)
+  
+  models[[lake]] <- f0
+  dharma[[lake]] <- simulateResiduals(f0, n = 1000)
+}
+
+res <- simulateResiduals(
+  fittedModel = f0,
+  n = 1000   # increase if you want more precision
+)
+
+plot(dharma[["BOH"]])
+plot(dharma[["Furnace"]])
+plot(dharma[["Feeagh"]])
+plot(dharma[["Bunaveela"]])
+
+for (lake in lakes) {
+  png(filename = paste0("DHARMa_", lake, ".png"),
+      width = 8, height = 5, units = "in", res = 300)
+  
+  plot(dharma[[lake]], main = "")   # no per-panel titles
+  
+  mtext(
+    paste(lake),
+    outer = TRUE,
+    cex = 1.2,
+    line = -1
+  )
+  
+  dev.off()
+}
+
+imgs <- image_read(paste0("DHARMa_", lakes, ".png"))
+row1 <- image_append(imgs[1:2], stack = FALSE)
+row2 <- image_append(imgs[3:4], stack = FALSE)
+combined <- image_append(c(row1, row2), stack = TRUE)
+image_write(combined, "DHARMa_all_lakes_weight.png")
+
+
+
+
+
+
+
+######## other residual plots here ##############################################################################
 
 setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance")
 
@@ -272,9 +504,3 @@ ggplot(weightenvdat, aes(x = cloudsvlunar, y = resid)) +
   facet_wrap(~ Lake) +
   theme_minimal() +
   labs(title = "Env indicators vs residuals for each lake")
-
-  
-  #simulationOutput <- simulateResiduals(fittedModel = f0, plot = TRUE)
-  #resids <- residuals(simulationOutput, quantileFunction = qnorm, outlierValues = c(-5,5))
-  #sub_dat <- subset(lcdat, Lake == lake & Month != "Oct" & !is.na(count))
-  #sub_dat <- droplevels(sub_dat)
