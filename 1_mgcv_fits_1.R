@@ -449,7 +449,7 @@ year_pred_1 <- NULL
 for(lake in lakes){
   print(lake)
   ## remove October sampling, which was out of the sampling season 
-  sub_dat <- subset(lcdat, Lake == lake & Month != "Oct" & !is.na(count))
+  sub_dat <- subset(countenvdat, Lake == lake & Month != "Oct" & !is.na(count))
   sub_dat <- droplevels(sub_dat)
   ## sum to zero contrasts - doesn't matter currently
   contrasts(sub_dat$fSite) <- contr.sum
@@ -635,7 +635,7 @@ weight_year_pred_1 <- NULL
 
 for(lake in lakes){
   print(lake)
-  sub_dat <- subset(wdat, Lake == lake & !is.na(wt))
+  sub_dat <- subset(weightenvdat, Lake == lake & !is.na(wt))
   sub_dat <- droplevels(sub_dat)
   ## sum to zero contrasts - doesn't matter currently
   contrasts(sub_dat$fSite) <- contr.sum
