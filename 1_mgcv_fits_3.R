@@ -16,7 +16,7 @@
 library(mgcv)
 library(ggplot2); theme_set(theme_bw())
 
-setwd("C:\\...")
+setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance\\Eel model_std_cloundslightinteract")
 
 load("all_lcdat.RData")
 
@@ -572,4 +572,3 @@ save(weight_fits_yrftempc, file = "weight_fits_yrftempc.RData")
 #   ) +
 #   theme_bw(base_size = 14) +
 #   facet_wrap(~ Lake, scales = "free_y")
-
