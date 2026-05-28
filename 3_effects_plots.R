@@ -18,7 +18,7 @@ library(MASS) ## for random multivariate normal simulation
 library(forcats)
 library(ggh4x)
 
-setwd("C:\\...")
+setwd("C:\\Users\\kendanwk7\\OneDrive - Washington State Executive Branch Agencies\\Desktop\\Burrishoole eel abundance\\Eel model_std_cloundslightinteract")
 
 today <- format(Sys.time(), "_%d_%m_%Y")
 
@@ -252,6 +252,52 @@ year_pred_noenv$Year_num    <- as.numeric(as.character(year_pred_noenv$Year))
 year_pred_yrftempd$Year_num <- as.numeric(as.character(year_pred_yrftempd$Year))
 year_pred_yrftempc$Year_num <- as.numeric(as.character(year_pred_yrftempc$Year))
 
+# off_box  <- -0.30   # boxplot + red mean CI
+# off_grn  <- -0.10   # green diamond
+# off_blue <- +0.10   # blue triangles
+# off_pur  <- +0.30   # purple squares
+# 
+# py0 <-
+#   ggplot()+
+#   facet_wrap(~Lake, scales = "free", ncol = 2) +
+#   # first the raw (nominal) data
+#   #geom_boxplot(data = pair_count, 
+#   #             aes(x = Year_num + off_box, y = count, group = Year)) +
+#   stat_summary(data = pair_count,
+#                aes(x = Year_num + off_box, y = count),
+#                fun.data = "mean_cl_boot",
+#                colour = "red",
+#                size = 0.3) +
+#   # then the values without environmental variables (green star)
+#   geom_errorbar(data = year_pred_noenv,
+#                 aes(x = Year_num + off_grn, ymin = lwr, ymax = upr, y = yhat),
+#                 width = 0.12, colour = "green") +
+#   geom_point(data = year_pred_noenv,
+#              aes(x = Year_num + off_grn, y = yhat),
+#              size = 2, shape = 18, colour = "green") +  # green diamond
+#   # then the values with env variables, conditioned on temp (blue triangles)
+#   geom_errorbar(data = year_pred_yrftempd,
+#                 aes(x = Year_num + off_blue, ymin = lwr, ymax = upr, y = yhat),
+#                 width = 0.12, colour = "blue") +
+#   geom_point(data = year_pred_yrftempd,
+#              aes(x = Year_num + off_blue, y = yhat),
+#              size = 2, shape = 17, colour = "blue") +  # blue triangle
+#   # then the values with env variables, NOT conditioned on temp (red squares)
+#   geom_errorbar(data = year_pred_yrftempc,
+#                 aes(x = Year_num + off_pur, ymin = lwr, ymax = upr, y = yhat),
+#                 width = 0.12, colour = "purple") +
+#   geom_point(data = year_pred_yrftempc,
+#              aes(x = Year_num + off_pur, y = yhat),
+#              size = 2, shape = 15, colour = "purple") +   #purple square
+#   ## Labels + theme
+#   # scale_x_continuous(
+#   #   breaks = seq(1987, 2025, 5),
+#   #   labels = seq(1987, 2025, 5),
+#   #   limits = c(min(all_years)-0.5, max(all_years)+0.5)) +
+#   xlab("Year") +
+#   ylab("Count per fyke net (2 codends)") +
+#   theme(strip.background = element_rect(fill = "grey"))
+
 off_box  <- -0.30   # boxplot + red mean CI
 off_grn  <- 0       # green diamond
 off_blue <- +0.30   # blue triangles
@@ -484,8 +530,18 @@ py3 <- ggplot(percent_df, aes(x = pd)) +
   coord_cartesian(xlim = c(-10, 100))
 
 ##png(paste0("Count_percent_decline_plots", today, ".png"), height = 8, width = 10, units = "in", res = 400)
-jpeg(paste0("Fig6_count_percent_decline_plots", today, ".jpg"), height = 7, width = 10, units = "in", res = 600)
-grid.arrange(py1, py2, py3, nrow =3)
+#jpeg(paste0("Fig6_count_percent_decline_plots", today, ".jpg"), height = 7, width = 10, units = "in", res = 600)
+#grid.arrange(py1, py2, py3, nrow =3)
+#dev.off()
+
+#Now plot only py2, with the trend, to put in main body of the manuscript
+jpeg(paste0("Fig5b_count_trend_plots", today, ".jpg"), height = 2.3, width = 10, units = "in", res = 600)
+grid.arrange(py2, nrow =1)
+dev.off()
+
+#then plot py3 for the supplemental appendix
+jpeg(paste0("FigS4_count_percent_decline_plots", today, ".jpg"), height = 2.3, width = 10, units = "in", res = 600)
+grid.arrange(py3, nrow =1)
 dev.off()
 
 
@@ -631,6 +687,54 @@ weightenvdat$Year_num              <- as.numeric(as.character(weightenvdat$Year)
 weight_year_pred_noenv$Year_num    <- as.numeric(as.character(weight_year_pred_noenv$Year))
 weight_year_pred_yrftempd$Year_num <- as.numeric(as.character(weight_year_pred_yrftempd$Year))
 weight_year_pred_yrftempc$Year_num <- as.numeric(as.character(weight_year_pred_yrftempc$Year))
+
+#plot of raw data (nominal), stand without env covariates,
+#std with env covariates (conditioned on temp), and std with env covariates (not cond on temp)
+# off_box  <- -0.30   # boxplot + red mean CI
+# off_grn  <- -0.10   # green diamond
+# off_blue <- +0.10   # blue triangles
+# off_pur  <- +0.30   # purple squares
+# 
+# py0 <-
+#   ggplot()+
+#   facet_wrap(~Lake, scales = "free", ncol = 2) +
+#   # first the raw (nominal) data
+#   #geom_boxplot(data = weightenvdat, 
+#   #             aes(x = Year_num + off_box, y = wt/Effort, group = Year)) +
+#   stat_summary(data = weightenvdat,
+#                aes(x = Year_num + off_box, y = wt/Effort),
+#                fun.data = "mean_cl_boot",
+#                colour = "red",
+#                size = 0.3) +
+#   # then the values without environmental variables (green star)
+#   geom_errorbar(data = weight_year_pred_noenv,
+#                 aes(x = Year_num + off_grn, ymin = lwr, ymax = upr, y = yhat),
+#                 width = 0.12, colour = "green") +
+#   geom_point(data = weight_year_pred_noenv,
+#                 aes(x = Year_num + off_grn, y = yhat),
+#                 size = 2, shape = 18, colour = "green") +  # green diamond
+#   # then the values with env variables, conditioned on temp (blue triangles)
+#   geom_errorbar(data = weight_year_pred_yrftempd,
+#                 aes(x = Year_num + off_blue, ymin = lwr, ymax = upr, y = yhat),
+#                 width = 0.12, colour = "blue") +
+#   geom_point(data = weight_year_pred_yrftempd,
+#                 aes(x = Year_num + off_blue, y = yhat),
+#                 size = 2, shape = 17, colour = "blue") +  # blue triangle
+#   # then the values with env variables, NOT conditioned on temp (red squares)
+#   geom_errorbar(data = weight_year_pred_yrftempc,
+#                 aes(x = Year_num + off_pur, ymin = lwr, ymax = upr, y = yhat),
+#                 width = 0.12, colour = "purple") +
+#   geom_point(data = weight_year_pred_yrftempc,
+#                 aes(x = Year_num + off_pur, y = yhat),
+#                 size = 2, shape = 15, colour = "purple") +   #purple square
+#   ## Labels + theme
+#   # scale_x_continuous(
+#   #   breaks = seq(1987, 2025, 5),
+#   #   labels = seq(1987, 2025, 5),
+#   #   limits = c(min(all_years)-0.5, max(all_years)+0.5)) +
+#   xlab("Year") +
+#   ylab("Mass per fyke net (kg)") +
+#   theme(strip.background = element_rect(fill = "grey"))
 
 off_box  <- -0.30   # boxplot + red mean CI
 off_grn  <- 0       # green diamond
@@ -848,8 +952,18 @@ py3 <- ggplot(weight_percent_df, aes(x = pd)) +
   coord_cartesian(xlim = c(-50, 100))
 
 ##png(paste0("Weight_percent_decline_plots", today, ".png"), height = 8, width = 10, units = "in", res = 400)
-jpeg(paste0("Fig8_weight_percent_decline_plots", today, ".jpg"), height = 7, width = 10, units = "in", res = 600)
-grid.arrange(py1, py2, py3, nrow =3)
+#jpeg(paste0("Fig8_weight_percent_decline_plots", today, ".jpg"), height = 7, width = 10, units = "in", res = 600)
+#grid.arrange(py1, py2, py3, nrow =3)
+#dev.off()
+
+#Now plot only py2, with the trend, to put in main body of the manuscript
+jpeg(paste0("Fig6b_weight_trend_plots", today, ".jpg"), height = 2.3, width = 10, units = "in", res = 600)
+grid.arrange(py2, nrow =1)
+dev.off()
+
+#then plot py3 for the supplemental appendix
+jpeg(paste0("FigS4_weight_percent_decline_plots", today, ".jpg"), height = 2.3, width = 10, units = "in", res = 600)
+grid.arrange(py3, nrow =1)
 dev.off()
 
 
@@ -862,486 +976,9 @@ dev.off()
 
 
 
-##### Code for plotting interaction terms (moonlight x clouds)  ##############
 
-###################################################################
-##  INTERACTION PLOT SLICES ##############
-##################################################################
 
-########  COUNT  #################
-
-lakes <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
-
-#create slices
-slice_props <- c(0.1, 0.5, 0.85)
-#slice_props <- c(0.1, 0.5, 0.9)
-slice_vals  <- quantile(countenvdat$moonlight, probs = slice_props)
-
-#create predication grid
-# grid for clouds × moonlight_slice × Lake
-grid_inter <- expand.grid(
-  clouds = seq(min(countenvdat$clouds), max(countenvdat$clouds), length = 200),
-  moonlight = slice_vals,
-  Lake = lakes
-)
-
-grid_inter$moonlight_prop <- factor(slice_props, levels = slice_props)[
-  match(grid_inter$moonlight, slice_vals)
-]
-
-#predict from the gam
-vars <- c("Year","DOY","fSite","trap_depth","trap_gradient","trap_number","fchain","watertemp","pressure","wind","waterlev","clouds","moonlight")
-vars <- vars[!vars %in% c("fSite", "fchain", "clouds", "moonlight")]
-for (v in vars) {
-  # Assign lake-specific means
-  lake_means <- tapply(countenvdat[[v]], countenvdat$Lake, mean, na.rm = TRUE)
-  grid_inter[[v]] <- lake_means[grid_inter$Lake]
-}
-
-#add column Effort where value is always 1 and Survey where always is "Russell"
-grid_inter$Effort <- 1
-grid_inter$survey <- "Russell"
-
-#now for fSite and fchain
-grid_inter$fSite <- NA
-grid_inter$fchain <- NA
-for (lake in lakes) {
-  countenvdat1 <- subset(countenvdat, Lake == lake & Month != "Oct" & !is.na(count))
-  
-  fSite1 <- countenvdat1 %>%
-    dplyr::pull(fSite) %>% 
-    unique() %>% 
-    .[1]
-  
-  fchain1 <- countenvdat1 %>%
-    dplyr::pull(fchain) %>% 
-    unique() %>% 
-    .[1]
-  
-  grid_inter$fSite[grid_inter$Lake==lake] <- as.character(fSite1)
-  grid_inter$fchain[grid_inter$Lake==lake] <- as.character(fchain1)
-}
-
-#write.csv(grid_inter, file = "grid_inter.csv", row.names = TRUE)
-
-#Predict the GAM interaction effect for each lake
-bs_year <- "cr"
-bs_other <- "tp"
-
-
-for (lake in lakes) {
-  print(lake)
-  ## remove October sampling, which was out of the sampling season 
-  sub_dat <- subset(countenvdat, Lake == lake & Month != "Oct" & !is.na(count))
-  sub_dat <- droplevels(sub_dat)
-  contrasts(sub_dat$fSite) <- contr.sum
-  #only use data with all environmental variables present so same dataset used in all models
-  vars <- c("watertemp", "pressure", "wind", "clouds", "moonlight", "waterlev")
-  idx <- apply(sub_dat[,vars], 1, function(x){all(!is.na(x))})
-  sub_dat <- sub_dat[idx,]
-  if(lake == "Feeagh"){
-    form <- as.formula(count ~
-                         s(Year, m = 2, bs = bs_year) +
-                         s(DOY, m = 2, bs = bs_other) +
-                         s(fSite, bs = "re") +
-                         s(trap_depth, m = 2, bs = bs_other) +
-                         s(trap_gradient, m = 2, bs = bs_other) +
-                         s(trap_number, by = survey, m = 2, bs = bs_other) +
-                         s(fchain, bs = "re") +
-                         s(watertemp, m = 2, bs = bs_other) +
-                         s(pressure, m = 2, bs = bs_other) +
-                         s(wind, m = 2, bs = bs_other) +
-                         s(clouds, m = 2, bs = bs_other) +
-                         s(moonlight, m = 2, bs = bs_other) +
-                         ti(clouds, moonlight, m = 2, bs = bs_other) +
-                         s(waterlev, m = 2, bs = bs_other) +
-                         #guard +
-                         offset(log(Effort)))
-  }
-  if(lake == "BOH"){
-    form <- as.formula(count ~ 
-                         s(Year, m = 2, bs = bs_year) +
-                         s(DOY, k = 5, m = 2, bs = bs_other) +
-                         s(fSite, bs = "re", k= 3) +
-                         s(trap_depth, m = 2, bs = bs_other) +
-                         s(trap_gradient, k = 5, m = 2, bs = bs_other) +
-                         s(trap_number, m = 2, bs = bs_other) +
-                         s(fchain, bs = "re") +
-                         s(watertemp, m = 2, bs = bs_other) +
-                         s(pressure, m = 2, bs = bs_other) +
-                         s(wind, m = 2, bs = bs_other) +
-                         s(clouds, m = 2, bs = bs_other) +
-                         s(moonlight, m = 2, bs = bs_other) +
-                         ti(clouds, moonlight, m = 2, bs = bs_other) +
-                         s(waterlev, m = 2, bs = bs_other) +
-                         #guard +
-                         offset(log(Effort)))
-  }
-  if(lake %in% c("Furnace", "Bunaveela")){
-    form <- as.formula(count ~ 
-                         s(Year, m = 1, bs = bs_year) +
-                         s(DOY, k = 5, m = 1, bs = bs_other) +
-                         s(fSite, bs = "re", k= 3) +
-                         s(trap_depth, k= 5, m = 1, bs = bs_other) +
-                         s(trap_gradient, k= 5, m = 1, bs = bs_other) +
-                         s(trap_number, k= 5, m = 1, bs = bs_other) +
-                         s(fchain, bs = "re") +
-                         s(watertemp, m = 1, bs = bs_other) +
-                         s(pressure, m = 1, bs = bs_other) +
-                         s(wind, m = 1, bs = bs_other) +
-                         s(clouds, m = 1, bs = bs_other) +
-                         s(moonlight, m = 1, bs = bs_other) +
-                         ti(clouds, moonlight, m = 1, bs = bs_other) +
-                         s(waterlev, m = 1, bs = bs_other) +
-                         #guard +
-                         offset(log(Effort)))
-  }
-  ## fit the model
-  f0 <- gam(form,
-            select = TRUE,
-            method = "REML",
-            family = nb(),
-            data = sub_dat)
-  
-  pred <- predict(f0, newdata = grid_inter[grid_inter$Lake == lake, ], se.fit = TRUE, type = "terms")
-  term_name <- "ti(clouds,moonlight)"   # match summary(gam_model)
-  idx <- grid_inter$Lake == lake
-  grid_inter$fit[idx] <- pred$fit[, term_name]
-  
-  #Confidence bands
-  grid_inter$se[idx]    <- pred$se.fit[, term_name]
-  grid_inter$lower[idx] <- grid_inter$fit[idx] - 2 * grid_inter$se[idx]
-  grid_inter$upper[idx] <- grid_inter$fit[idx] + 2 * grid_inter$se[idx]
-}
-
-#to get p-values
-load("count_fits_yrstempc.RData")
-
-pvalue_df <- NULL
-
-for(lake in lakes){
-  tmp <- summary(count_fits_yrstempc[[lake]])
-  tmp <- tmp$s.table
-  colnames(tmp)[colnames(tmp) == "p-value"] <- "p_value"
-  df <- as.data.frame(tmp)
-  df$var <- rownames(df)
-  rownames(df) <- NULL
-  df$Lake <- lake
-  pvalue_df <- rbind(pvalue_df, df)
-}
-
-pvalue_df$p_value2 <- round(pvalue_df$p_value, 3)
-pvalue_df$p_value2[pvalue_df$p_value < 0.001] <- "<0.001"
-
-pvalue_df$Lake <- factor(pvalue_df$Lake, levels = lakes)
-
-pv <- pvalue_df[pvalue_df$var == "ti(clouds,moonlight)", ]
-
-#drop values of clouds and moonlight outside observed together per lake, so they are not in the plot
-ranges <- countenvdat %>%
-  group_by(Lake) %>%
-  summarise(
-    cmin = min(clouds),
-    cmax = max(clouds),
-    mmin = min(moonlight),
-    mmax = max(moonlight)
-  )
-
-grid_inter <- grid_inter %>%
-  left_join(ranges, by = "Lake") %>%
-  filter(
-    clouds >= cmin, clouds <= cmax,
-    moonlight >= mmin, moonlight <= mmax
-  )
-
-#plot
-library(ggplot2)
-
-pv2 <- pv %>%
-  mutate(text_col = ifelse(p_value < 0.05, "black", "grey50"))
-
-lake_order <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
-
-grid_inter$Lake   <- factor(grid_inter$Lake,   levels = lake_order)
-countenvdat$Lake  <- factor(countenvdat$Lake,  levels = lake_order)
-pv2$Lake          <- factor(pv2$Lake,          levels = lake_order)
-
-ggplot(grid_inter,
-       aes(x = clouds, y = fit,
-           colour = moonlight_prop,
-           group = moonlight_prop)) +
-  geom_line(linewidth = 1) +
-  # rug showing where clouds data exist
-  geom_rug(
-    data = countenvdat,
-    aes(x = clouds),
-    inherit.aes = FALSE,
-    sides = "b",
-    alpha = 0.4
-  ) +
-  facet_wrap(~Lake, nrow = 1) +
-  scale_colour_viridis_d(name = "Moonlight slice\n(quantile)") +
-  labs(
-    x = "Clouds",
-    y = "Predicted effect"
-  ) +
-  theme_bw() +
-  theme(
-    legend.position = "right",
-    strip.background = element_rect(fill = "grey90")
-  ) +
-  # add p-value
-  geom_text(
-    data = pv2,
-    aes(
-      x = Inf,
-      y = Inf,
-      label = p_value2,
-      color = I(text_col)
-    ),
-    hjust = 1.2,
-    vjust = 2,
-    size = 3,
-    inherit.aes = FALSE,
-    show.legend = FALSE
-  )
-
-
-
-
-
-########  WEIGHT  #################
-
-lakes <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
-
-#create slices
-slice_props <- c(0.15, 0.5, 0.85)
-#slice_props <- c(0.1, 0.5, 0.9)
-slice_vals  <- quantile(weightenvdat$moonlight, probs = slice_props)
-
-#create predication grid
-# grid for clouds × moonlight_slice × Lake
-grid_inter <- expand.grid(
-  clouds = seq(min(weightenvdat$clouds), max(weightenvdat$clouds), length = 200),
-  moonlight = slice_vals,
-  Lake = lakes
-)
-
-grid_inter$moonlight_prop <- factor(slice_props, levels = slice_props)[
-  match(grid_inter$moonlight, slice_vals)
-]
-
-#predict from the gam
-vars <- c("Year","DOY","fSite","watertemp","pressure","wind","waterlev","clouds","moonlight")
-vars <- vars[!vars %in% c("fSite", "clouds", "moonlight")]
-for (v in vars) {
-  # Assign lake-specific means
-  lake_means <- tapply(weightenvdat[[v]], weightenvdat$Lake, mean, na.rm = TRUE)
-  grid_inter[[v]] <- lake_means[grid_inter$Lake]
-}
-
-#add column Effort where value is always 1
-grid_inter$Effort <- 1
-
-#now for fSite
-grid_inter$fSite <- NA
-for (lake in lakes) {
-  weightenvdat1 <- subset(weightenvdat, Lake == lake & Month != "Oct" & !is.na(wt))
-  
-  fSite1 <- weightenvdat1 %>%
-    dplyr::pull(fSite) %>% 
-    unique() %>% 
-    .[1]
-  
-  grid_inter$fSite[grid_inter$Lake==lake] <- as.character(fSite1)
-}
-
-#write.csv(grid_inter, file = "grid_inter.csv", row.names = TRUE)
-
-#Predict the GAM interaction effect for each lake
-bs_year <- "cr"
-bs_other <- "tp"
-
-
-for(lake in lakes){
-  print(lake)
-  sub_dat <- subset(weightenvdat, Lake == lake & !is.na(wt))
-  sub_dat <- droplevels(sub_dat)
-  ## sum to zero contrasts - doesn't matter currently
-  contrasts(sub_dat$fSite) <- contr.sum
-  #only use data with all environmental variables present so same dataset used in all models
-  vars <- c("watertemp", "pressure", "wind", "clouds", "moonlight", "waterlev")
-  idx <- apply(sub_dat[,vars], 1, function(x){all(!is.na(x))})
-  sub_dat <- sub_dat[idx,]
-  if(lake %in% c("BOH", "Bunaveela")){
-    form <- as.formula(wt ~
-                         s(Year, m = 2, bs = bs_year) +
-                         s(DOY, m = 2, bs = bs_other) +
-                         s(fSite, bs = "re") +
-                         s(watertemp, m = 2, bs = bs_other) +
-                         s(pressure, m = 2, bs = bs_other) +
-                         s(wind, m = 2, bs = bs_other) +
-                         s(clouds, m = 2, bs = bs_other) +
-                         s(moonlight, m = 2, bs = bs_other) +
-                         ti(clouds, moonlight, m = 2, bs = bs_other) +
-                         s(waterlev, m = 2, bs = bs_other) +
-                         #guard + 
-                         offset(log(Effort))
-    )
-  }
-  if(lake == "Furnace"){
-    form <- as.formula(wt ~
-                         s(Year, m = 1, bs = bs_year) +
-                         s(DOY, m = 1, bs = bs_other, k = 5) +
-                         s(fSite, bs = "re") +
-                         s(watertemp, m = 1, bs = bs_other) +
-                         s(pressure, m = 1, bs = bs_other) +
-                         s(wind, m = 1, bs = bs_other) +
-                         s(clouds, m = 1, bs = bs_other) +
-                         s(moonlight, m = 1, bs = bs_other) +
-                         ti(clouds, moonlight, m = 1, bs = bs_other) +
-                         s(waterlev, m = 1, bs = bs_other) +
-                         #guard + 
-                         offset(log(Effort))
-    )
-  }
-  if(lake == "Feeagh"){
-    form <- as.formula(wt ~
-                         s(Year, m = 2, bs = bs_year) +
-                         s(DOY, m = 2, bs = bs_other) +
-                         s(fSite, bs = "re") +
-                         s(watertemp, m = 2, bs = bs_other) +
-                         s(pressure, m = 2, bs = bs_other) +
-                         s(wind, m = 2, bs = bs_other) +
-                         s(clouds, m = 2, bs = bs_other) +
-                         s(moonlight, m = 2, bs = bs_other) +
-                         ti(clouds, moonlight, m = 2, bs = bs_other) +
-                         s(waterlev, m = 2, bs = bs_other) +
-                         #guard + 
-                         offset(log(Effort))
-    )
-  }
-  ##
-  f0 <- gam(form,
-            select = TRUE,
-            ##method = "ML",
-            family = tw(),
-            data = sub_dat)
-  
-  pred <- predict(f0, newdata = grid_inter[grid_inter$Lake == lake, ], se.fit = TRUE, type = "terms")
-  term_name <- "ti(clouds,moonlight)"   # match summary(gam_model)
-  idx <- grid_inter$Lake == lake
-  grid_inter$fit[idx] <- pred$fit[, term_name]
-  
-  #Confidence bands
-  grid_inter$se[idx]    <- pred$se.fit[, term_name]
-  grid_inter$lower[idx] <- grid_inter$fit[idx] - 2 * grid_inter$se[idx]
-  grid_inter$upper[idx] <- grid_inter$fit[idx] + 2 * grid_inter$se[idx]
-}
-
-#to get p-values
-load("weight_fits_yrstempc.RData")
-
-pvalue_df <- NULL
-
-for(lake in lakes){
-  tmp <- summary(weight_fits_yrstempc[[lake]])
-  tmp <- tmp$s.table
-  colnames(tmp)[colnames(tmp) == "p-value"] <- "p_value"
-  df <- as.data.frame(tmp)
-  df$var <- rownames(df)
-  rownames(df) <- NULL
-  df$Lake <- lake
-  pvalue_df <- rbind(pvalue_df, df)
-}
-
-pvalue_df$p_value2 <- round(pvalue_df$p_value, 3)
-pvalue_df$p_value2[pvalue_df$p_value < 0.001] <- "<0.001"
-
-pvalue_df$Lake <- factor(pvalue_df$Lake, levels = lakes)
-
-pv <- pvalue_df[pvalue_df$var == "ti(clouds,moonlight)", ]
-
-#drop values of clouds and moonlight outside observed together per lake, so they are not in the plot
-ranges <- weightenvdat %>%
-  group_by(Lake) %>%
-  summarise(
-    cmin = min(clouds),
-    cmax = max(clouds),
-    mmin = min(moonlight),
-    mmax = max(moonlight)
-  )
-
-grid_inter <- grid_inter %>%
-  left_join(ranges, by = "Lake") %>%
-  filter(
-    clouds >= cmin, clouds <= cmax,
-    moonlight >= mmin, moonlight <= mmax
-  )
-
-#plot
-library(ggplot2)
-
-pv2 <- pv %>%
-  mutate(text_col = ifelse(p_value < 0.05, "black", "grey50"))
-
-lake_order <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
-
-grid_inter$Lake   <- factor(grid_inter$Lake,   levels = lake_order)
-countenvdat$Lake  <- factor(countenvdat$Lake,  levels = lake_order)
-pv2$Lake          <- factor(pv2$Lake,          levels = lake_order)
-
-ggplot(grid_inter,
-       aes(x = clouds, y = fit,
-           colour = moonlight_prop,
-           group = moonlight_prop)) +
-  geom_line(linewidth = 1) +
-  # rug showing where clouds data exist
-  geom_rug(
-    data = countenvdat,
-    aes(x = clouds),
-    inherit.aes = FALSE,
-    sides = "b",
-    alpha = 0.4
-  ) +
-  facet_wrap(~Lake, nrow = 1) +
-  scale_colour_viridis_d(name = "Moonlight slice\n(quantile)") +
-  labs(
-    x = "Clouds",
-    y = "Predicted effect"
-  ) +
-  theme_bw() +
-  theme(
-    legend.position = "right",
-    strip.background = element_rect(fill = "grey90")
-  ) +
-  # add p-value
-  geom_text(
-    data = pv2,
-    aes(
-      x = Inf,
-      y = Inf,
-      label = p_value2,
-      color = I(text_col)
-    ),
-    hjust = 1.2,
-    vjust = 2,
-    size = 3,
-    inherit.aes = FALSE,
-    show.legend = FALSE
-  )
-
-
-
-
-
-
-
-
-
-###################################################################
-##  INTERACTION PLOT 3-D (not using this in the paper) ##############
-##################################################################
+##### Code for plotting interaction terms  ##############
 
 ######## Eel COUNT  ######################################
 
@@ -1939,3 +1576,547 @@ p_interaction <- ggplot(grid_inter, aes(x = clouds, y = moonlight)) +
     plot.margin = unit(c(0, 1, 0, 1), "lines"),
     legend.position = "right"
   )
+
+
+
+
+
+
+
+###################################################################
+##  INTERACTION PLOT SLICES ##############
+##################################################################
+
+########  COUNT  #################
+
+lakes <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
+
+#create slices
+slice_props <- c(0.1, 0.5, 0.85)
+#slice_props <- c(0.1, 0.5, 0.9)
+slice_vals  <- quantile(countenvdat$moonlight, probs = slice_props)
+
+#create predication grid
+# grid for clouds × moonlight_slice × Lake
+grid_inter <- expand.grid(
+  clouds = seq(min(countenvdat$clouds), max(countenvdat$clouds), length = 200),
+  moonlight = slice_vals,
+  Lake = lakes
+)
+
+grid_inter$moonlight_prop <- factor(slice_props, levels = slice_props)[
+  match(grid_inter$moonlight, slice_vals)
+]
+
+#predict from the gam
+vars <- c("Year","DOY","fSite","trap_depth","trap_gradient","trap_number","fchain","watertemp","pressure","wind","waterlev","clouds","moonlight")
+vars <- vars[!vars %in% c("fSite", "fchain", "clouds", "moonlight")]
+for (v in vars) {
+  # Assign lake-specific means
+  lake_means <- tapply(countenvdat[[v]], countenvdat$Lake, mean, na.rm = TRUE)
+  grid_inter[[v]] <- lake_means[grid_inter$Lake]
+}
+
+#add column Effort where value is always 1 and Survey where always is "Russell"
+grid_inter$Effort <- 1
+grid_inter$survey <- "Russell"
+
+#now for fSite and fchain
+grid_inter$fSite <- NA
+grid_inter$fchain <- NA
+for (lake in lakes) {
+  countenvdat1 <- subset(countenvdat, Lake == lake & Month != "Oct" & !is.na(count))
+  
+  fSite1 <- countenvdat1 %>%
+    dplyr::pull(fSite) %>% 
+    unique() %>% 
+    .[1]
+  
+  fchain1 <- countenvdat1 %>%
+    dplyr::pull(fchain) %>% 
+    unique() %>% 
+    .[1]
+  
+  grid_inter$fSite[grid_inter$Lake==lake] <- as.character(fSite1)
+  grid_inter$fchain[grid_inter$Lake==lake] <- as.character(fchain1)
+}
+
+#write.csv(grid_inter, file = "grid_inter.csv", row.names = TRUE)
+
+#Predict the GAM interaction effect for each lake
+bs_year <- "cr"
+bs_other <- "tp"
+
+
+for (lake in lakes) {
+  print(lake)
+  ## remove October sampling, which was out of the sampling season 
+  sub_dat <- subset(countenvdat, Lake == lake & Month != "Oct" & !is.na(count))
+  sub_dat <- droplevels(sub_dat)
+  contrasts(sub_dat$fSite) <- contr.sum
+  #only use data with all environmental variables present so same dataset used in all models
+  vars <- c("watertemp", "pressure", "wind", "clouds", "moonlight", "waterlev")
+  idx <- apply(sub_dat[,vars], 1, function(x){all(!is.na(x))})
+  sub_dat <- sub_dat[idx,]
+  if(lake == "Feeagh"){
+    form <- as.formula(count ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re") +
+                         s(trap_depth, m = 2, bs = bs_other) +
+                         s(trap_gradient, m = 2, bs = bs_other) +
+                         s(trap_number, by = survey, m = 2, bs = bs_other) +
+                         s(fchain, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard +
+                         offset(log(Effort)))
+  }
+  if(lake == "BOH"){
+    form <- as.formula(count ~ 
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, k = 5, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re", k= 3) +
+                         s(trap_depth, m = 2, bs = bs_other) +
+                         s(trap_gradient, k = 5, m = 2, bs = bs_other) +
+                         s(trap_number, m = 2, bs = bs_other) +
+                         s(fchain, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard +
+                         offset(log(Effort)))
+  }
+  if(lake %in% c("Furnace", "Bunaveela")){
+    form <- as.formula(count ~ 
+                         s(Year, m = 1, bs = bs_year) +
+                         s(DOY, k = 5, m = 1, bs = bs_other) +
+                         s(fSite, bs = "re", k= 3) +
+                         s(trap_depth, k= 5, m = 1, bs = bs_other) +
+                         s(trap_gradient, k= 5, m = 1, bs = bs_other) +
+                         s(trap_number, k= 5, m = 1, bs = bs_other) +
+                         s(fchain, bs = "re") +
+                         s(watertemp, m = 1, bs = bs_other) +
+                         s(pressure, m = 1, bs = bs_other) +
+                         s(wind, m = 1, bs = bs_other) +
+                         s(clouds, m = 1, bs = bs_other) +
+                         s(moonlight, m = 1, bs = bs_other) +
+                         ti(clouds, moonlight, m = 1, bs = bs_other) +
+                         s(waterlev, m = 1, bs = bs_other) +
+                         #guard +
+                         offset(log(Effort)))
+  }
+  ## fit the model
+  f0 <- gam(form,
+            select = TRUE,
+            method = "REML",
+            family = nb(),
+            data = sub_dat)
+  
+  pred <- predict(f0, newdata = grid_inter[grid_inter$Lake == lake, ], se.fit = TRUE, type = "terms")
+  term_name <- "ti(clouds,moonlight)"   # match summary(gam_model)
+  idx <- grid_inter$Lake == lake
+  grid_inter$fit[idx] <- pred$fit[, term_name]
+  
+  #Confidence bands
+  grid_inter$se[idx]    <- pred$se.fit[, term_name]
+  grid_inter$lower[idx] <- grid_inter$fit[idx] - 2 * grid_inter$se[idx]
+  grid_inter$upper[idx] <- grid_inter$fit[idx] + 2 * grid_inter$se[idx]
+}
+
+#to get p-values
+load("count_fits_yrstempc.RData")
+
+pvalue_df <- NULL
+
+for(lake in lakes){
+  tmp <- summary(count_fits_yrstempc[[lake]])
+  tmp <- tmp$s.table
+  colnames(tmp)[colnames(tmp) == "p-value"] <- "p_value"
+  df <- as.data.frame(tmp)
+  df$var <- rownames(df)
+  rownames(df) <- NULL
+  df$Lake <- lake
+  pvalue_df <- rbind(pvalue_df, df)
+}
+
+pvalue_df$p_value2 <- round(pvalue_df$p_value, 3)
+pvalue_df$p_value2[pvalue_df$p_value < 0.001] <- "<0.001"
+
+pvalue_df$Lake <- factor(pvalue_df$Lake, levels = lakes)
+
+pv <- pvalue_df[pvalue_df$var == "ti(clouds,moonlight)", ]
+
+#drop values of clouds and moonlight outside observed together per lake, so they are not in the plot
+ranges <- countenvdat %>%
+  group_by(Lake) %>%
+  summarise(
+    cmin = min(clouds),
+    cmax = max(clouds),
+    mmin = min(moonlight),
+    mmax = max(moonlight)
+  )
+
+grid_inter <- grid_inter %>%
+  left_join(ranges, by = "Lake") %>%
+  filter(
+    clouds >= cmin, clouds <= cmax,
+    moonlight >= mmin, moonlight <= mmax
+  )
+
+#plot
+library(ggplot2)
+
+pv2 <- pv %>%
+  mutate(text_col = ifelse(p_value < 0.05, "black", "grey50"))
+
+lake_order <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
+
+grid_inter$Lake   <- factor(grid_inter$Lake,   levels = lake_order)
+countenvdat$Lake  <- factor(countenvdat$Lake,  levels = lake_order)
+pv2$Lake          <- factor(pv2$Lake,          levels = lake_order)
+
+ggplot(grid_inter,
+       aes(x = clouds, y = fit,
+           colour = moonlight_prop,
+           group = moonlight_prop)) +
+  geom_line(linewidth = 1) +
+  # rug showing where clouds data exist
+  geom_rug(
+    data = countenvdat,
+    aes(x = clouds),
+    inherit.aes = FALSE,
+    sides = "b",
+    alpha = 0.4
+  ) +
+  facet_wrap(~Lake, nrow = 1) +
+  scale_colour_viridis_d(name = "Moonlight slice\n(quantile)") +
+  labs(
+    x = "Clouds",
+    y = "Predicted effect"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    strip.background = element_rect(fill = "grey90")
+  ) +
+  # add p-value
+  geom_text(
+    data = pv2,
+    aes(
+      x = Inf,
+      y = Inf,
+      label = p_value2,
+      color = I(text_col)
+    ),
+    hjust = 1.2,
+    vjust = 2,
+    size = 3,
+    inherit.aes = FALSE,
+    show.legend = FALSE
+  )
+
+
+
+
+
+########  WEIGHT  #################
+
+lakes <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
+
+#create slices
+slice_props <- c(0.15, 0.5, 0.85)
+#slice_props <- c(0.1, 0.5, 0.9)
+slice_vals  <- quantile(weightenvdat$moonlight, probs = slice_props)
+
+#create predication grid
+# grid for clouds × moonlight_slice × Lake
+grid_inter <- expand.grid(
+  clouds = seq(min(weightenvdat$clouds), max(weightenvdat$clouds), length = 200),
+  moonlight = slice_vals,
+  Lake = lakes
+)
+
+grid_inter$moonlight_prop <- factor(slice_props, levels = slice_props)[
+  match(grid_inter$moonlight, slice_vals)
+]
+
+#predict from the gam
+vars <- c("Year","DOY","fSite","watertemp","pressure","wind","waterlev","clouds","moonlight")
+vars <- vars[!vars %in% c("fSite", "clouds", "moonlight")]
+for (v in vars) {
+  # Assign lake-specific means
+  lake_means <- tapply(weightenvdat[[v]], weightenvdat$Lake, mean, na.rm = TRUE)
+  grid_inter[[v]] <- lake_means[grid_inter$Lake]
+}
+
+#add column Effort where value is always 1
+grid_inter$Effort <- 1
+
+#now for fSite
+grid_inter$fSite <- NA
+for (lake in lakes) {
+  weightenvdat1 <- subset(weightenvdat, Lake == lake & Month != "Oct" & !is.na(wt))
+  
+  fSite1 <- weightenvdat1 %>%
+    dplyr::pull(fSite) %>% 
+    unique() %>% 
+    .[1]
+  
+  grid_inter$fSite[grid_inter$Lake==lake] <- as.character(fSite1)
+}
+
+#write.csv(grid_inter, file = "grid_inter.csv", row.names = TRUE)
+
+#Predict the GAM interaction effect for each lake
+bs_year <- "cr"
+bs_other <- "tp"
+
+
+for(lake in lakes){
+  print(lake)
+  sub_dat <- subset(weightenvdat, Lake == lake & !is.na(wt))
+  sub_dat <- droplevels(sub_dat)
+  ## sum to zero contrasts - doesn't matter currently
+  contrasts(sub_dat$fSite) <- contr.sum
+  #only use data with all environmental variables present so same dataset used in all models
+  vars <- c("watertemp", "pressure", "wind", "clouds", "moonlight", "waterlev")
+  idx <- apply(sub_dat[,vars], 1, function(x){all(!is.na(x))})
+  sub_dat <- sub_dat[idx,]
+  if(lake %in% c("BOH", "Bunaveela")){
+    form <- as.formula(wt ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard + 
+                         offset(log(Effort))
+    )
+  }
+  if(lake == "Furnace"){
+    form <- as.formula(wt ~
+                         s(Year, m = 1, bs = bs_year) +
+                         s(DOY, m = 1, bs = bs_other, k = 5) +
+                         s(fSite, bs = "re") +
+                         s(watertemp, m = 1, bs = bs_other) +
+                         s(pressure, m = 1, bs = bs_other) +
+                         s(wind, m = 1, bs = bs_other) +
+                         s(clouds, m = 1, bs = bs_other) +
+                         s(moonlight, m = 1, bs = bs_other) +
+                         ti(clouds, moonlight, m = 1, bs = bs_other) +
+                         s(waterlev, m = 1, bs = bs_other) +
+                         #guard + 
+                         offset(log(Effort))
+    )
+  }
+  if(lake == "Feeagh"){
+    form <- as.formula(wt ~
+                         s(Year, m = 2, bs = bs_year) +
+                         s(DOY, m = 2, bs = bs_other) +
+                         s(fSite, bs = "re") +
+                         s(watertemp, m = 2, bs = bs_other) +
+                         s(pressure, m = 2, bs = bs_other) +
+                         s(wind, m = 2, bs = bs_other) +
+                         s(clouds, m = 2, bs = bs_other) +
+                         s(moonlight, m = 2, bs = bs_other) +
+                         ti(clouds, moonlight, m = 2, bs = bs_other) +
+                         s(waterlev, m = 2, bs = bs_other) +
+                         #guard + 
+                         offset(log(Effort))
+    )
+  }
+  ##
+  f0 <- gam(form,
+            select = TRUE,
+            ##method = "ML",
+            family = tw(),
+            data = sub_dat)
+  
+  pred <- predict(f0, newdata = grid_inter[grid_inter$Lake == lake, ], se.fit = TRUE, type = "terms")
+  term_name <- "ti(clouds,moonlight)"   # match summary(gam_model)
+  idx <- grid_inter$Lake == lake
+  grid_inter$fit[idx] <- pred$fit[, term_name]
+  
+  #Confidence bands
+  grid_inter$se[idx]    <- pred$se.fit[, term_name]
+  grid_inter$lower[idx] <- grid_inter$fit[idx] - 2 * grid_inter$se[idx]
+  grid_inter$upper[idx] <- grid_inter$fit[idx] + 2 * grid_inter$se[idx]
+}
+
+#to get p-values
+load("weight_fits_yrstempc.RData")
+
+pvalue_df <- NULL
+
+for(lake in lakes){
+  tmp <- summary(weight_fits_yrstempc[[lake]])
+  tmp <- tmp$s.table
+  colnames(tmp)[colnames(tmp) == "p-value"] <- "p_value"
+  df <- as.data.frame(tmp)
+  df$var <- rownames(df)
+  rownames(df) <- NULL
+  df$Lake <- lake
+  pvalue_df <- rbind(pvalue_df, df)
+}
+
+pvalue_df$p_value2 <- round(pvalue_df$p_value, 3)
+pvalue_df$p_value2[pvalue_df$p_value < 0.001] <- "<0.001"
+
+pvalue_df$Lake <- factor(pvalue_df$Lake, levels = lakes)
+
+pv <- pvalue_df[pvalue_df$var == "ti(clouds,moonlight)", ]
+
+#drop values of clouds and moonlight outside observed together per lake, so they are not in the plot
+ranges <- weightenvdat %>%
+  group_by(Lake) %>%
+  summarise(
+    cmin = min(clouds),
+    cmax = max(clouds),
+    mmin = min(moonlight),
+    mmax = max(moonlight)
+  )
+
+grid_inter <- grid_inter %>%
+  left_join(ranges, by = "Lake") %>%
+  filter(
+    clouds >= cmin, clouds <= cmax,
+    moonlight >= mmin, moonlight <= mmax
+  )
+
+#plot
+library(ggplot2)
+
+pv2 <- pv %>%
+  mutate(text_col = ifelse(p_value < 0.05, "black", "grey50"))
+
+lake_order <- c("BOH", "Furnace", "Feeagh", "Bunaveela")
+
+grid_inter$Lake   <- factor(grid_inter$Lake,   levels = lake_order)
+countenvdat$Lake  <- factor(countenvdat$Lake,  levels = lake_order)
+pv2$Lake          <- factor(pv2$Lake,          levels = lake_order)
+
+ggplot(grid_inter,
+       aes(x = clouds, y = fit,
+           colour = moonlight_prop,
+           group = moonlight_prop)) +
+  geom_line(linewidth = 1) +
+  # rug showing where clouds data exist
+  geom_rug(
+    data = countenvdat,
+    aes(x = clouds),
+    inherit.aes = FALSE,
+    sides = "b",
+    alpha = 0.4
+  ) +
+  facet_wrap(~Lake, nrow = 1) +
+  scale_colour_viridis_d(name = "Moonlight slice\n(quantile)") +
+  labs(
+    x = "Clouds",
+    y = "Predicted effect"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "right",
+    strip.background = element_rect(fill = "grey90")
+  ) +
+  # add p-value
+  geom_text(
+    data = pv2,
+    aes(
+      x = Inf,
+      y = Inf,
+      label = p_value2,
+      color = I(text_col)
+    ),
+    hjust = 1.2,
+    vjust = 2,
+    size = 3,
+    inherit.aes = FALSE,
+    show.legend = FALSE
+  )
+
+
+
+################
+##  To print mean and median by lake
+#################
+
+#######  COUNT  #######
+
+#define function: 
+median_cl_boot <- function(x, conf = 0.95, B = 1000) {
+  qs <- (1 - conf) / 2
+  boots <- replicate(B, median(sample(x, replace = TRUE)))
+  c(
+    y    = median(x),
+    ymin = quantile(boots, qs),
+    ymax = quantile(boots, 1 - qs)
+  )
+}
+
+library(dplyr)
+library(tidyr)
+
+set.seed(123)
+
+summary_table <- pair_count %>%
+  group_by(Lake, Year_num) %>%
+  summarise(
+    stats = list(median_cl_boot(count)),
+    .groups = "drop"
+  ) %>%
+  unnest_wider(stats)
+
+print(summary_table)
+
+write.csv(summary_table, file = "summary_table_median.csv", row.names = FALSE)
+
+#mean: 
+set.seed(123)
+
+summary_table <- pair_count %>%
+  group_by(Lake, Year_num) %>%
+  summarise(mean_cl_boot(count), .groups = "drop")
+
+write.csv(summary_table, file = "summary_table_mean.csv", row.names = FALSE)
+
+
+#######  WEIGHT  #######
+
+set.seed(123)
+
+summary_table <- weightenvdat %>%
+  group_by(Lake, Year_num) %>%
+  summarise(
+    stats = list(median_cl_boot(wt/Effort)),
+    .groups = "drop"
+  ) %>%
+  unnest_wider(stats)
+
+print(summary_table)
+
+write.csv(summary_table, file = "summary_table_wt_median.csv", row.names = FALSE)
+
+#mean: 
+set.seed(123)
+
+summary_table <- weightenvdat %>%
+  group_by(Lake, Year_num) %>%
+  summarise(mean_cl_boot(wt/Effort), .groups = "drop")
+
+write.csv(summary_table, file = "summary_table_wt_mean.csv", row.names = FALSE)
